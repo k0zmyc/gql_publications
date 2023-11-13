@@ -1,3 +1,39 @@
+# PUBLICATIONS_A
+
+## Zadání:
+* rozšiřte datové struktury (tabulky) způsobem, který umožní uložit specifické údaje k publikacím typu:
+  - B: Odborná kniha
+
+  - D: Stať ve sborníku
+
+  - J: Recenzovaný odborný článek (Jimp, Jsc a Jost)
+
+* Použijte https://www.vyzkum.cz/storage/att/338DAF8D743C561ADC66E8E392AE2F2A/StrukturyXML_2018_2.6.0.pdf str. 24-41
+* Pro jednotlivé typy vytvořte GQLModely, propojte s entitou PublicationGQLModel
+* Modely v databázi pomocí SQLAlchemy, API endpoint typu GraphQL s pomocí knihovny Strawberry.
+* Přístup k databázi řešte důsledně přes AioDataloder, resp. (https://github.com/hrbolek/uoishelpers/blob/main/uoishelpers/dataloaders.py).
+* Zabezpečte kompletní **C**R**UD** operace nad entitami ExternalIdModel, ExternalIdTypeModel, ExternalIdCategoryModel
+* **CUD** operace jako návratový typ nejméně se třemi prvky id, msg a „entityresult“ (pojmenujte adekvátně podle dotčené entity), vhodné přidat možnost nadřízené entity, speciálně pro operaci **D**.
+* Řešte autorizaci operací (permission classes).
+* Kompletní CRUD dotazy na GQL v souboru externalids_queries.json (dictionary), jméno klíče nechť vhodně identifikuje operaci, hodnota je dictionary s klíči query (obsahuje parametrický dotaz) nebo mutation (obsahuje parametrické mutation) a variables (obsahuje dictionary jako testovací hodnoty).
+* Kompletní popisy API v kódu (description u GQLModelů) a popisy DB vrstvy (comment u DBModelů).
+* Zabezpečte více jak 90% code test coverage (standard pytest).
+* 1PD OK
+
+## Časový harmonogram:
+
+9.10.2023 zveřejnění harmonogramu prací na projektu (z pohledu programátora), určení repository url (nebo alespoň root např. https://github.com/hrbolek)<br>
+16.10.2023 projektový den, Prezentace porozumění projektu, jeho struktura, deskripce entit („live dokumentace v GQL API – Voyager / GraphiQL“)<br>
+27.11.2023 projektový den, Prezentace alespoň RU operací<br>
+15.1.2024 projektový den, Alfa verze<br>
+21.1.2024 uzavření projektu<br>
+22.1.2024 počátek zkouškového období<br>
+?.3.2024 konec zkouškového období.<br>
+
+
+
+
+
 # ISDatabase
 Database backend for university site. Project is based on SQLAlchemy and GraphQL (strawberry federated).
 <br/><br/>
