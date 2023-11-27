@@ -5,6 +5,16 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context["asyncSessionMaker"]
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+
 import datetime
 
 from gql_publications.GraphResolvers import (
@@ -24,6 +34,8 @@ from gql_publications.GraphResolvers import (
     resolveAuthorsByUser,
 )
 
+from .UserGQLModel import UserGQLModel
+from .PublicationGQLModel import PublicationGQLModel
 from typing import Optional
 
 @strawberryA.federation.type(

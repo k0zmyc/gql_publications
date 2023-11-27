@@ -5,6 +5,8 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+from .PublicationGQLModel import PublicationGQLModel
+
 import datetime
 
 from gql_publications.GraphResolvers import (

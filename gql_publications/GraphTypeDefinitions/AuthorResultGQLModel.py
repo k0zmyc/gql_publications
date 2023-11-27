@@ -5,6 +5,25 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context["asyncSessionMaker"]
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+
+def AsyncSessionFromInfo(info):
+    print(
+        "obsolete function used AsyncSessionFromInfo, use withInfo context manager instead"
+    )
+    return info.context["session"]
+
+def getLoaders(info):
+    return info.context['all']
+
 import datetime
 
 from gql_publications.GraphResolvers import (
@@ -26,6 +45,7 @@ from gql_publications.GraphResolvers import (
 
 from typing import Optional
 
+from .AuthorGQLModel import AuthorGQLModel
 from gql_publications.DBFeeder import randomDataStructure
 
 @strawberryA.type

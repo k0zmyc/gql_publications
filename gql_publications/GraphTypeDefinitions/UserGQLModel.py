@@ -5,6 +5,15 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context["asyncSessionMaker"]
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
 import datetime
 
 from gql_publications.GraphResolvers import (
@@ -24,6 +33,24 @@ from gql_publications.GraphResolvers import (
     resolveAuthorsByUser,
 )
 
+from .AuthorGQLModel import AuthorGQLModel
+from .AuthorInsertGQLModel import AuthorInsertGQLModel
+from .AuthorUpdateGQLModel import AuthorUpdateGQLModel
+from .AuthorResultGQLModel import AuthorResultGQLModel
+from .Mutation import Mutation
+from .Query import Query
+from .PlanSubjectGQLModel import PlanSubjectGQLModel
+from .SubjectGQLModel import SubjectGQLModel
+from .UserGQLModel import UserGQLModel
+from ._PublicationInsertGQLModel import _PublicationInsertGQLModel
+from ._PublicationUpdateGQLModel import _PublicationUpdateGQLModel
+from .PublicationInsertGQLModel import PublicationInsertGQLModel
+from .PublicationGQLModel import PublicationGQLModel
+from .PublicationEditorGQLModel import PublicationEditorGQLModel
+from .PublicationResultGQLModel import PublicationResultGQLModel
+from .PublicationUpdateGQLModel import PublicationUpdateGQLModel
+from .PublicationTypeGQLModel import PublicationTypeGQLModel
+
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
@@ -41,8 +68,3 @@ class UserGQLModel:
         async with withInfo(info) as session:
             result = await resolveAuthorsByUser(session, self.id)
             return result
-
-
-@strawberryA.federation.type(
-    keys=["id"], description="""Entity representing a publication type"""
-)
