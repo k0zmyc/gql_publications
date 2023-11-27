@@ -7,22 +7,6 @@ from contextlib import asynccontextmanager
 
 import datetime
 
-from gql_publications.GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
-)
-from gql_publications.GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from gql_publications.GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
-)
 
 from typing import Optional
 

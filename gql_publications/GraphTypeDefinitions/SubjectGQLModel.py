@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Annotated
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -15,35 +15,10 @@ async def withInfo(info):
             pass
 
 
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolete function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
-
-def getLoaders(info):
-    return info.context['all']
-
-import datetime
-
 from gql_publications.GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
+    resolvePublicationsForSubject
 )
-from gql_publications.GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from gql_publications.GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
-)
-
-from .PublicationGQLModel import PublicationGQLModel
+PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class SubjectGQLModel:

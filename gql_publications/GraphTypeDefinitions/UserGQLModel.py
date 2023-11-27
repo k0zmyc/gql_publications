@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Annotated
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -14,42 +14,11 @@ async def withInfo(info):
         finally:
             pass
 
-import datetime
-
 from gql_publications.GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
-)
-from gql_publications.GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from gql_publications.GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
+    resolveAuthorsByUser
 )
 
-from .AuthorGQLModel import AuthorGQLModel
-from .AuthorInsertGQLModel import AuthorInsertGQLModel
-from .AuthorUpdateGQLModel import AuthorUpdateGQLModel
-from .AuthorResultGQLModel import AuthorResultGQLModel
-from .Mutation import Mutation
-from .Query import Query
-from .PlanSubjectGQLModel import PlanSubjectGQLModel
-from .SubjectGQLModel import SubjectGQLModel
-from .UserGQLModel import UserGQLModel
-from ._PublicationInsertGQLModel import _PublicationInsertGQLModel
-from ._PublicationUpdateGQLModel import _PublicationUpdateGQLModel
-from .PublicationInsertGQLModel import PublicationInsertGQLModel
-from .PublicationGQLModel import PublicationGQLModel
-from .PublicationEditorGQLModel import PublicationEditorGQLModel
-from .PublicationResultGQLModel import PublicationResultGQLModel
-from .PublicationUpdateGQLModel import PublicationUpdateGQLModel
-from .PublicationTypeGQLModel import PublicationTypeGQLModel
+AuthorGQLModel = Annotated["AuthorGQLModel", strawberryA.lazy(".AuthorGQLModel")]
 
 
 @strawberryA.federation.type(extend=True, keys=["id"])

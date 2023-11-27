@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Annotated
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -18,25 +18,11 @@ async def withInfo(info):
 import datetime
 
 from gql_publications.GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
-)
-from gql_publications.GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from gql_publications.GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
+    resolveAuthorById
 )
 
-from .UserGQLModel import UserGQLModel
-from .PublicationGQLModel import PublicationGQLModel
-from typing import Optional
+UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
+PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
 
 @strawberryA.federation.type(
     keys=["id"],

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Annotated
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -24,42 +24,12 @@ def AsyncSessionFromInfo(info):
 def getLoaders(info):
     return info.context['all']
 
-import datetime
-
-from gql_publications.GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
-)
-from gql_publications.GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from gql_publications.GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
-)
-
-from .AuthorGQLModel import AuthorGQLModel
-from .AuthorInsertGQLModel import AuthorInsertGQLModel
-from .AuthorUpdateGQLModel import AuthorUpdateGQLModel
-from .AuthorResultGQLModel import AuthorResultGQLModel
-from .Mutation import Mutation
-from .Query import Query
-from .PlanSubjectGQLModel import PlanSubjectGQLModel
-from .SubjectGQLModel import SubjectGQLModel
-from .UserGQLModel import UserGQLModel
-from ._PublicationInsertGQLModel import _PublicationInsertGQLModel
-from ._PublicationUpdateGQLModel import _PublicationUpdateGQLModel
-from .PublicationInsertGQLModel import PublicationInsertGQLModel
-from .PublicationGQLModel import PublicationGQLModel
-from .PublicationEditorGQLModel import PublicationEditorGQLModel
-from .PublicationResultGQLModel import PublicationResultGQLModel
-from .PublicationUpdateGQLModel import PublicationUpdateGQLModel
-from .PublicationTypeGQLModel import PublicationTypeGQLModel
+AuthorInsertGQLModel = Annotated["AuthorInsertGQLModel", strawberryA.lazy(".AuthorInsertGQLModel")]
+AuthorUpdateGQLModel = Annotated["AuthorUpdateGQLModel", strawberryA.lazy(".AuthorUpdateGQLModel")]
+AuthorResultGQLModel = Annotated["AuthorResultGQLModel", strawberryA.lazy(".AuthorResultGQLModel")]
+PublicationInsertGQLModel = Annotated["PublicationInsertGQLModel", strawberryA.lazy(".PublicationInsertGQLModel")]
+PublicationResultGQLModel = Annotated["PublicationResultGQLModel", strawberryA.lazy(".PublicationResultGQLModel")]
+PublicationUpdateGQLModel = Annotated["PublicationUpdateGQLModel", strawberryA.lazy(".PublicationUpdateGQLModel")]
 
 from typing import Optional
 
