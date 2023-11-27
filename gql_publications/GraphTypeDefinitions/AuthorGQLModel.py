@@ -49,11 +49,13 @@ class AuthorGQLModel:
         return self.share
 
     @strawberryA.field(description="""user""")
-    async def user(self) -> "UserGQLModel":
+    async def user(self) -> typing.Optional["UserGQLModel"]:
+        from .UserGQLModel import UserGQLModel
         return await UserGQLModel.resolve_reference(self.user_id)
 
     @strawberryA.field(description="""publication""")
     async def publication(self, info: strawberryA.types.Info) -> "PublicationGQLModel":
+        from .PublicationGQLModel import PublicationGQLModel
         return await PublicationGQLModel.resolve_reference(info, self.publication_id)
 
     @strawberryA.field(description="""If an author is valid""")

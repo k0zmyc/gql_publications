@@ -15,5 +15,6 @@ class AuthorResultGQLModel:
 
     @strawberryA.field(description="""Result of publication operation""")
     async def author(self, info: strawberryA.types.Info) -> Union[AuthorGQLModel, None]:
+        from .AuthorGQLModel import AuthorGQLModel
         result = await AuthorGQLModel.resolve_reference(info, self.id)
         return result
