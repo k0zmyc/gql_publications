@@ -54,7 +54,7 @@ class AuthorGQLModel:
         return await UserGQLModel.resolve_reference(self.user_id)
 
     @strawberryA.field(description="""publication""")
-    async def publication(self, info: strawberryA.types.Info) -> "PublicationGQLModel":
+    async def publication(self, info: strawberryA.types.Info) -> typing.Optional["PublicationGQLModel"]:
         from .PublicationGQLModel import PublicationGQLModel
         return await PublicationGQLModel.resolve_reference(info, self.publication_id)
 

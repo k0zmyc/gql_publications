@@ -23,6 +23,8 @@ async def withInfo(info):
             pass
 
 
+
+@strawberryA.type
 class PublicationTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):

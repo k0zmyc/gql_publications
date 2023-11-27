@@ -54,7 +54,7 @@ class PublicationEditorGQLModel:
     @strawberryA.field(description="""Updates publication data""")
     async def update(
         self, info: strawberryA.types.Info, data: "PublicationUpdateGQLModel"
-    ) -> "PublicationGQLModel":
+    ) -> typing.Optional["PublicationGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveUpdatePublication(session, id=self.id, data=data)
             return result
@@ -62,7 +62,7 @@ class PublicationEditorGQLModel:
     @strawberryA.field(description="""Sets author a share""")
     async def set_author_share(
         self, info: strawberryA.types.Info, author_id: strawberryA.ID, share: float
-    ) -> "AuthorGQLModel":
+    ) -> typing.Optional["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveUpdateAuthor(
                 session, author_id, data=None, extraAttributes={"share": share}
@@ -80,7 +80,7 @@ class PublicationEditorGQLModel:
     @strawberryA.field(description="""Create a new author""")
     async def add_author(
         self, info: strawberryA.types.Info, user_id: strawberryA.ID
-    ) -> "AuthorGQLModel":
+    ) -> typing.Optional["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveInsertAuthor(
                 session,
