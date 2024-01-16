@@ -28,7 +28,7 @@ from .SubjectModel import SubjectModel
 ###########################################################################################################################
 
 
-async def startEngine(connectionstring, makeDrop=False, makeUp=True):
+async def startEngine(connectionstring, makeDrop=True, makeUp=True):
     """Provede nezbytne ukony a vrati asynchronni SessionMaker"""
     asyncEngine = create_async_engine(connectionstring)
 

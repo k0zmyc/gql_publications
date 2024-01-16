@@ -27,14 +27,14 @@ async def withInfo(info):
 @strawberryA.type
 class PublicationTypeGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
         async with withInfo(info) as session:
             result = await resolvePublicationTypeById(session, id)
             result._type_definition = cls._type_definition  # little hack :)
             return result
 
     @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""type""")
@@ -48,5 +48,3 @@ class PublicationTypeGQLModel:
         async with withInfo(info) as session:
             result = await resolvePublicationForPublicationType(session, self.id)
             return result
-
-

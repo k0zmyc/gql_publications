@@ -24,12 +24,13 @@ def AsyncSessionFromInfo(info):
 def getLoaders(info):
     return info.context['all']
 
-AuthorInsertGQLModel = Annotated["AuthorInsertGQLModel", strawberryA.lazy(".AuthorInsertGQLModel")]
-AuthorUpdateGQLModel = Annotated["AuthorUpdateGQLModel", strawberryA.lazy(".AuthorUpdateGQLModel")]
-AuthorResultGQLModel = Annotated["AuthorResultGQLModel", strawberryA.lazy(".AuthorResultGQLModel")]
-PublicationInsertGQLModel = Annotated["PublicationInsertGQLModel", strawberryA.lazy(".PublicationInsertGQLModel")]
-PublicationResultGQLModel = Annotated["PublicationResultGQLModel", strawberryA.lazy(".PublicationResultGQLModel")]
-PublicationUpdateGQLModel = Annotated["PublicationUpdateGQLModel", strawberryA.lazy(".PublicationUpdateGQLModel")]
+AuthorInsertGQLModel = Annotated["AuthorInsertGQLModel", strawberryA.lazy(".AuthorGQLModel")]
+AuthorUpdateGQLModel = Annotated["AuthorUpdateGQLModel", strawberryA.lazy(".AuthorGQLModel")]
+AuthorResultGQLModel = Annotated["AuthorResultGQLModel", strawberryA.lazy(".AuthorGQLModel")]
+
+PublicationInsertGQLModel = Annotated["PublicationInsertGQLModel", strawberryA.lazy(".PublicationGQLModel")]
+PublicationResultGQLModel = Annotated["PublicationResultGQLModel", strawberryA.lazy(".PublicationGQLModel")]
+PublicationUpdateGQLModel = Annotated["PublicationUpdateGQLModel", strawberryA.lazy(".PublicationGQLModel")]
 
 from typing import Optional
 
@@ -59,7 +60,7 @@ class Mutation:
         return result
 
     @strawberryA.mutation(description="Delete the authorship.")
-    async def author_delete(self, info: strawberryA.types.Info, authorship_id: strawberryA.ID) -> str:
+    async def author_delete(self, info: strawberryA.types.Info, authorship_id: uuid.UUID) -> str:
         loader = getLoaders(info).authors
         await loader.delete(authorship_id)
         return "ok"

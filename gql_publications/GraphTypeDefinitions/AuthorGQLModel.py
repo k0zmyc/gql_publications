@@ -4,7 +4,7 @@ from unittest import result
 import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
-
+from typing import Optional
 @asynccontextmanager
 async def withInfo(info):
     asyncSessionMaker = info.context["asyncSessionMaker"]
@@ -17,9 +17,8 @@ async def withInfo(info):
 
 import datetime
 
-from gql_publications.GraphResolvers import (
-    resolveAuthorById
-)
+from gql_publications.GraphResolvers import (resolveAuthorById)
+from gql_publications.DBFeeder import randomDataStructure
 
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
@@ -30,14 +29,14 @@ PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".Public
 )
 class AuthorGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
         async with withInfo(info) as session:
             result = await resolveAuthorById(session, id)
             result._type_definition = cls._type_definition  # little hack :)
             return result
 
     @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""order in author list""")
@@ -49,12 +48,12 @@ class AuthorGQLModel:
         return self.share
 
     @strawberryA.field(description="""user""")
-    async def user(self) -> typing.Optional["UserGQLModel"]:
+    async def user(self) -> typing.Optional[uuid.UUID]:
         from .UserGQLModel import UserGQLModel
         return await UserGQLModel.resolve_reference(self.user_id)
 
     @strawberryA.field(description="""publication""")
-    async def publication(self, info: strawberryA.types.Info) -> typing.Optional["PublicationGQLModel"]:
+    async def publication(self, info: strawberryA.types.Info) -> typing.Optional[uuid.UUID]:
         from .PublicationGQLModel import PublicationGQLModel
         return await PublicationGQLModel.resolve_reference(info, self.publication_id)
 
@@ -65,3 +64,34 @@ class AuthorGQLModel:
     @strawberryA.field(description="""last change""")
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
+    
+
+@strawberryA.input
+class AuthorInsertGQLModel:
+    user_id: uuid.UUID
+    publication_id: uuid.UUID
+    id: Optional[uuid.UUID] = None
+    share: Optional[float] = 0.1
+    order: Optional[int] = 1000
+
+
+
+@strawberryA.input
+class AuthorUpdateGQLModel:
+    id: uuid.UUID
+    lastchange: datetime.datetime
+    share: Optional[float] = None
+    order: Optional[int] = None
+
+
+
+@strawberryA.type
+class AuthorResultGQLModel:
+    id: uuid.UUID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of publication operation""")
+    async def author(self, info: strawberryA.types.Info) -> Union[AuthorGQLModel, None]:
+        from .AuthorGQLModel import AuthorGQLModel
+        result = await AuthorGQLModel.resolve_reference(info, self.id)
+        return result

@@ -58,7 +58,7 @@ class Query:
 
     @strawberryA.field(description="""Finds a publication by their id""")
     async def publication_by_id(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, id: uuid.UUID
     ) -> Union[PublicationGQLModel, None]:
         async with withInfo(info) as session:
             result = await resolvePublicationById(session, id)
@@ -66,7 +66,7 @@ class Query:
 
     @strawberryA.field(description="""Finds an author by their id""")
     async def author_by_id(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, id: uuid.UUID
     ) -> Union[AuthorGQLModel, None]:
         async with withInfo(info) as session:
             result = await resolveAuthorById(session, id)
@@ -82,7 +82,7 @@ class Query:
 
     @strawberryA.field(description="""Finds a group type by its id""")
     async def publication_type_by_id(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, id: uuid.UUID
     ) -> Union[PublicationTypeGQLModel, None]:
         async with withInfo(info) as session:
             result = await resolvePublicationTypeById(session, id)

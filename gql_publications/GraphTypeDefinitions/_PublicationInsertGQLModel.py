@@ -12,10 +12,10 @@ from typing import Optional
 
 @strawberryA.input
 class _PublicationInsertGQLModel:
-    id: Optional[strawberryA.ID] = None
+    id: Optional[uuid.UUID] = None
     name: Optional[str] = None
     place: Optional[str] = None
     published_date: Optional[datetime.date] = None
     reference: Optional[str] = None
-    publication_type_id: Optional[strawberryA.ID] = None
+    publication_type_id: Optional[uuid.UUID] = None
     valid: Optional[bool] = None

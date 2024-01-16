@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy import (
     Column,
     DateTime,
-    ForeignKey
+    Uuid
 )
 
 from .base import BaseModel
@@ -15,14 +15,14 @@ class SubjectModel(BaseModel):
     __tablename__ = "publication_subjects"
 
     id = UUIDColumn()
-    publication_id = Column(ForeignKey("publications.id"), index=True)
-    subject_id = UUIDFKey(nullable=True)#Column(ForeignKey("plan_subjects.id"), index=True)
+    publication_id = Column(Uuid, index=True)
+    #subject_id = UUIDFKey(nullable=True)#Column(ForeignKey("plan_subjects.id"), index=True)
 
     #publication = relationship("PublicationModel")
     #subject = relationship("PlanSubjectModel")
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 

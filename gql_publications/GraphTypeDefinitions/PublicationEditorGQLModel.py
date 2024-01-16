@@ -14,6 +14,7 @@ async def withInfo(info):
         finally:
             pass
 
+from .PublicationGQLModel import PublicationUpdateGQLModel
 
 from gql_publications.GraphResolvers import (
     resolvePublicationById
@@ -26,7 +27,6 @@ from gql_publications.GraphResolvers import (
 )
 
 AuthorGQLModel = Annotated["AuthorGQLModel", strawberryA.lazy(".AuthorGQLModel")]
-PublicationUpdateGQLModel = Annotated["PublicationUpdateGQLModel", strawberryA.lazy(".PublicationUpdateGQLModel")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
 
 
@@ -41,14 +41,14 @@ class PublicationEditorGQLModel:
     
 
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
         async with withInfo(info) as session:
             result = await resolvePublicationById(session, id)
             result._type_definition = cls._type_definition  # little hack :)
             return result
 
     @strawberryA.field(description="""Entity primary key""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""Updates publication data""")
@@ -61,7 +61,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Sets author a share""")
     async def set_author_share(
-        self, info: strawberryA.types.Info, author_id: strawberryA.ID, share: float
+        self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float
     ) -> typing.Optional["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveUpdateAuthor(
@@ -71,7 +71,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Updates the author data""")
     async def set_author_order(
-        self, info: strawberryA.types.Info, author_id: strawberryA.ID, order: int
+        self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int
     ) -> List["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveUpdateAuthorOrder(session, self.id, author_id, order)
@@ -79,7 +79,7 @@ class PublicationEditorGQLModel:
 
     @strawberryA.field(description="""Create a new author""")
     async def add_author(
-        self, info: strawberryA.types.Info, user_id: strawberryA.ID
+        self, info: strawberryA.types.Info, user_id: uuid.UUID
     ) -> typing.Optional["AuthorGQLModel"]:
         async with withInfo(info) as session:
             result = await resolveInsertAuthor(

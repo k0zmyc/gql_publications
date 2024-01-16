@@ -1,27 +1,19 @@
 from uuid import uuid4, UUID
-from sqlalchemy import Column, String
+from sqlalchemy import Column, Uuid
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
 
-def newUuidAsString():
-    return f"{uuid.uuid1()}"
+uuid = uuid4
 
 
-def UUIDColumn(name=None):
-    if name is None:
-        return Column(String, primary_key=True, unique=True, default=newUuidAsString)
-    else:
-        return Column(
-            name, String, primary_key=True, unique=True, default=newUuidAsString
-        )
+def UUIDColumn():
+
+    return Column(
+        Uuid, primary_key=True, default=uuid
+    )
 
 
-def UUIDFKey(*, ForeignKey=None, nullable=False):
-    if ForeignKey is None:
-        return Column(
-            String, index=True, nullable=nullable
-        )
-    else:
-        return Column(
-            ForeignKey, index=True, nullable=nullable
-        )
+def UUIDFKey(comment = None, nullable=True, **kwargs):
+    
+    return Column(
+        Uuid, index=True, nullable=nullable, **kwargs
+    )

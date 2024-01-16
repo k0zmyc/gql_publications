@@ -2,10 +2,10 @@ import sqlalchemy
 
 from sqlalchemy import (
     Column,
-    Integer,
+    Uuid,
     DateTime,
-    ForeignKey,
-    Float,
+    Integer,
+    Float
 )
 
 from sqlalchemy.orm import relationship
@@ -18,8 +18,8 @@ class AuthorModel(BaseModel):
     __tablename__ = "publication_authors"
 
     id = UUIDColumn()
-    user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
-    publication_id = Column(ForeignKey("publications.id"), index=True)
+    user_id = Column(Uuid, index=True)
+    publication_id = Column(Uuid, index=True)
     order = Column(Integer)
     share = Column(Float)
 
@@ -28,6 +28,6 @@ class AuthorModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 

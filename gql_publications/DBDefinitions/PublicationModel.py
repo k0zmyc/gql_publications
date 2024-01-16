@@ -4,7 +4,7 @@ from sqlalchemy import (
     Column,
     String,
     DateTime,
-    ForeignKey,
+    Uuid,
     Boolean,
     Date
 )
@@ -19,7 +19,7 @@ class PublicationModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    publication_type_id = Column(ForeignKey("publicationtypes.id"), index=True)
+    publication_type_id = Column(Uuid, index=True)
     place = Column(String)
     published_date = Column(Date)
     reference = Column(String)
@@ -27,8 +27,8 @@ class PublicationModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    #changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     #author = relationship("AuthorModel", back_populates="publication")
     #publication_type = relationship(

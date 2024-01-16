@@ -23,16 +23,14 @@ PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".Public
 @strawberryA.federation.type(extend=True, keys=["id"])
 class SubjectGQLModel:
 
-    id: strawberryA.ID = strawberryA.federation.field(external=True)
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> uuid.UUID:
+        return self.id
+    
+    @strawberryA.field(description="""primary key""")
+    def publication_id(self) -> uuid.UUID:
+        return self.publication_id
 
     @classmethod
-    async def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: uuid.UUID):
         return SubjectGQLModel(id=id)
-
-    @strawberryA.field(description="""List of publications with this type""")
-    async def publications(
-        self, info: strawberryA.types.Info
-    ) -> typing.List["PublicationGQLModel"]:
-        async with withInfo(info) as session:
-            result = await resolvePublicationsForSubject(session, self.id)
-            return result

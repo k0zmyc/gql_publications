@@ -1,4 +1,4 @@
-from typing import List, Union, Annotated
+from typing import List, Union, Annotated, Optional
 import typing
 from unittest import result
 import strawberry as strawberryA
@@ -16,6 +16,8 @@ async def withInfo(info):
 
 
 import datetime
+
+from gql_publications.DBFeeder import randomDataStructure
 
 from gql_publications.GraphResolvers import (
     resolvePublicationById
@@ -36,14 +38,14 @@ PublicationTypeGQLModel = Annotated["PublicationTypeGQLModel", strawberryA.lazy(
 
 class PublicationGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
         async with withInfo(info) as session:
             result = await resolvePublicationById(session, id)
             result._type_definition = cls._type_definition  # little hack :)
             return result
 
     @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""Timestamp""")
@@ -99,5 +101,44 @@ class PublicationGQLModel:
         ## current user must be checked if has rights to get the editor
         ## if not, then None value must be returned
         return self
+    
+
+    
+@strawberryA.input
+class PublicationInsertGQLModel:
+    name: str
+    
+    id: Optional[uuid.UUID] = None
+    publication_type_id: Optional[uuid.UUID] = None
+    place: Optional[str] = ""
+    published_date: Optional[datetime.datetime] = datetime.datetime.now()
+    reference: Optional[str] = ""
+    valid: Optional[bool] = True
 
 
+
+
+@strawberryA.type
+class PublicationResultGQLModel:
+    id: uuid.UUID = None
+    msg: str = None
+
+    @strawberryA.field(description="""Result of publication operation""")
+    async def publication(self, info: strawberryA.types.Info) -> Union[PublicationGQLModel, None]:
+        from .PublicationGQLModel import PublicationGQLModel
+        result = await PublicationGQLModel.resolve_reference(info, self.id)
+        return result
+   
+
+
+@strawberryA.input
+class PublicationUpdateGQLModel:
+    lastchange: datetime.datetime
+    id: uuid.UUID
+
+    name: Optional[str] = None
+    publication_type_id: Optional[uuid.UUID] = None
+    place: Optional[str] = None
+    published_date: Optional[datetime.datetime] = None
+    reference: Optional[str] = None
+    valid: Optional[bool] = None

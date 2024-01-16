@@ -58,10 +58,7 @@ from gql_publications.GraphResolvers import (
 
 from typing import Optional
 
-from .AuthorGQLModel import AuthorGQLModel
-from .AuthorInsertGQLModel import AuthorInsertGQLModel
-from .AuthorUpdateGQLModel import AuthorUpdateGQLModel
-from .AuthorResultGQLModel import AuthorResultGQLModel
+from .AuthorGQLModel import AuthorGQLModel, AuthorInsertGQLModel, AuthorUpdateGQLModel, AuthorResultGQLModel
 from .Mutation import Mutation
 from .Query import Query
 from .PlanSubjectGQLModel import PlanSubjectGQLModel
@@ -69,11 +66,12 @@ from .SubjectGQLModel import SubjectGQLModel
 from .UserGQLModel import UserGQLModel
 from ._PublicationInsertGQLModel import _PublicationInsertGQLModel
 from ._PublicationUpdateGQLModel import _PublicationUpdateGQLModel
-from .PublicationInsertGQLModel import PublicationInsertGQLModel
 from .PublicationGQLModel import PublicationGQLModel
+from .PublicationGQLModel import PublicationInsertGQLModel
+from .PublicationGQLModel import PublicationUpdateGQLModel
+from .PublicationGQLModel import PublicationResultGQLModel
 from .PublicationEditorGQLModel import PublicationEditorGQLModel
-from .PublicationResultGQLModel import PublicationResultGQLModel
-from .PublicationUpdateGQLModel import PublicationUpdateGQLModel
+from .PublicationGQLModel import PublicationUpdateGQLModel
 from .PublicationTypeGQLModel import PublicationTypeGQLModel
 
 
