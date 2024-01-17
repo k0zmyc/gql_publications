@@ -17,7 +17,7 @@ async def withInfo(info):
 
 import datetime
 
-from gql_publications.DBFeeder import randomDataStructure
+from gql_publications.utils.DBFeeder import randomDataStructure
 
 from gql_publications.GraphResolvers import (
     resolvePublicationById

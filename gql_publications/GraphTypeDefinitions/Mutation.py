@@ -34,7 +34,7 @@ PublicationUpdateGQLModel = Annotated["PublicationUpdateGQLModel", strawberryA.l
 
 from typing import Optional
 
-from gql_publications.DBFeeder import randomDataStructure
+from gql_publications.utils.DBFeeder import randomDataStructure
 
 @strawberryA.federation.type(extend=True)
 class Mutation:

@@ -33,7 +33,7 @@ def singleCall(asyncFunc):
 
     return result
 
-from gql_publications.DBFeeder import initDB
+from gql_publications.utils.DBFeeder import initDB
 @singleCall
 async def RunOnceAndReturnSessionMaker():
     """Provadi inicializaci asynchronniho db engine, inicializaci databaze a vraci asynchronni SessionMaker.
@@ -68,7 +68,7 @@ async def RunOnceAndReturnSessionMaker():
 
 from strawberry.asgi import GraphQL
 
-from gql_publications.Dataloaders import createLoaders
+from gql_publications.utils.Dataloaders import createLoaders
 
 class MyGraphQL(GraphQL):
     """Rozsirena trida zabezpecujici praci se session"""

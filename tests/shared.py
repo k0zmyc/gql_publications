@@ -29,7 +29,7 @@ async def prepare_in_memory_sqllite():
 
     return async_session_maker
 
-from gql_publications.DBFeeder import get_demodata
+from gql_publications.utils.DBFeeder import get_demodata
 
 async def prepare_demodata(async_session_maker):
     data = get_demodata()
@@ -48,7 +48,7 @@ async def prepare_demodata(async_session_maker):
     )
 
 
-from gql_publications.Dataloaders import createLoaders
+from gql_publications.utils.Dataloaders import createLoaders
 
 
 async def createContext(asyncSessionMaker):

@@ -18,7 +18,7 @@ async def withInfo(info):
 import datetime
 
 from gql_publications.GraphResolvers import (resolveAuthorById)
-from gql_publications.DBFeeder import randomDataStructure
+from gql_publications.utils.DBFeeder import randomDataStructure
 
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
@@ -66,7 +66,7 @@ class AuthorGQLModel:
         return self.lastchange
     
 
-@strawberryA.input
+@strawberryA.input(description="""Input structure - C operation""")
 class AuthorInsertGQLModel:
     user_id: uuid.UUID
     publication_id: uuid.UUID

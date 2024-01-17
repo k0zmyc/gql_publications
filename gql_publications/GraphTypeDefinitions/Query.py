@@ -21,7 +21,7 @@ PublicationTypeGQLModel = Annotated["PublicationTypeGQLModel", strawberryA.lazy(
 
 
 
-from gql_publications.DBFeeder import randomDataStructure
+from gql_publications.utils.DBFeeder import randomDataStructure
 
 
 @asynccontextmanager
