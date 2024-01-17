@@ -5,14 +5,8 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
+from .BaseGQLModel import BaseGQLModel
+from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
 from .PublicationGQLModel import PublicationUpdateGQLModel
 
@@ -42,7 +36,7 @@ class PublicationEditorGQLModel:
 
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolvePublicationById(session, id)
             result._type_definition = cls._type_definition  # little hack :)
             return result
@@ -55,7 +49,7 @@ class PublicationEditorGQLModel:
     async def update(
         self, info: strawberryA.types.Info, data: "PublicationUpdateGQLModel"
     ) -> typing.Optional["PublicationGQLModel"]:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolveUpdatePublication(session, id=self.id, data=data)
             return result
 
@@ -63,7 +57,7 @@ class PublicationEditorGQLModel:
     async def set_author_share(
         self, info: strawberryA.types.Info, author_id: uuid.UUID, share: float
     ) -> typing.Optional["AuthorGQLModel"]:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolveUpdateAuthor(
                 session, author_id, data=None, extraAttributes={"share": share}
             )
@@ -73,7 +67,7 @@ class PublicationEditorGQLModel:
     async def set_author_order(
         self, info: strawberryA.types.Info, author_id: uuid.UUID, order: int
     ) -> List["AuthorGQLModel"]:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolveUpdateAuthorOrder(session, self.id, author_id, order)
             return result
 
@@ -81,7 +75,7 @@ class PublicationEditorGQLModel:
     async def add_author(
         self, info: strawberryA.types.Info, user_id: uuid.UUID
     ) -> typing.Optional["AuthorGQLModel"]:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolveInsertAuthor(
                 session,
                 None,
@@ -95,7 +89,7 @@ class PublicationEditorGQLModel:
     async def invalidate_publication(
         self, info: strawberryA.types.Info
     ) -> PublicationGQLModel:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             publication = await resolvePublicationById(session, self.id)
             publication.valid = False
             await session.commit()

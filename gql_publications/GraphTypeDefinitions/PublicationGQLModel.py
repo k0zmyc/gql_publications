@@ -9,18 +9,6 @@ import datetime
 from .BaseGQLModel import BaseGQLModel
 from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
-# @asynccontextmanager
-# async def getLoadersFromInfo(info):
-#     asyncSessionMaker = info.context["asyncSessionMaker"]
-#     async with asyncSessionMaker() as session:
-#         try:
-#             yield session
-#         finally:
-#             pass
-
-
-
-
 from gql_publications.utils.DBFeeder import randomDataStructure
 
 from gql_publications.GraphResolvers import (

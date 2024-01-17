@@ -5,14 +5,8 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
+from .BaseGQLModel import BaseGQLModel
+from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
 from gql_publications.GraphResolvers import (
     resolveAuthorsByUser
@@ -34,6 +28,6 @@ class UserGQLModel:
     async def author_publications(
         self, info: strawberryA.types.Info
     ) -> typing.List["AuthorGQLModel"]:
-        async with withInfo(info) as session:
+        async with getLoadersFromInfo(info) as session:
             result = await resolveAuthorsByUser(session, self.id)
             return result

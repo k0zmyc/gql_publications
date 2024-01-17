@@ -5,6 +5,8 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
+from .BaseGQLModel import BaseGQLModel
+from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class PlanSubjectGQLModel:
