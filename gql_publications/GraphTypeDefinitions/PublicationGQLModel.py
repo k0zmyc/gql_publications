@@ -11,7 +11,7 @@ from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
 from gql_publications.utils.DBFeeder import randomDataStructure
 
-from gql_publications.GraphResolvers import (
+from ._GraphResolvers import (
     resolvePublicationTypeById,
     resolveAuthorsForPublication,
     resolvePublicationById

@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from .BaseGQLModel import BaseGQLModel
 from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
-from gql_publications.GraphResolvers import (
+from ._GraphResolvers import (
     resolveAuthorsByUser
 )
 

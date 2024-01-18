@@ -5,12 +5,12 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
-from gql_publications.GraphResolvers import (
+from ._GraphResolvers import (
     resolvePublicationById,
     resolvePublicationAll,
     resolveAuthorById,
 )
-from gql_publications.GraphResolvers import (
+from ._GraphResolvers import (
     resolvePublicationTypeAll,
     resolvePublicationTypeById
 )

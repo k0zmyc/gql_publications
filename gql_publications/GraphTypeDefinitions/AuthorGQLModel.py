@@ -10,7 +10,7 @@ import datetime
 from .BaseGQLModel import BaseGQLModel
 from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
-from gql_publications.GraphResolvers import (resolveAuthorById)
+from ._GraphResolvers import (resolveAuthorById)
 from gql_publications.utils.DBFeeder import randomDataStructure
 
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]

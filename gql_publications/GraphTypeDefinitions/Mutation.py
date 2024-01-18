@@ -5,14 +5,8 @@ import strawberry as strawberryA
 import uuid
 from contextlib import asynccontextmanager
 
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
+from .BaseGQLModel import BaseGQLModel
+from gql_publications.utils.Dataloaders import getLoadersFromInfo
 
 
 def AsyncSessionFromInfo(info):

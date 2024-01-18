@@ -119,10 +119,10 @@ class AuthorizationLoader(DataLoader):
 class Loaders:
     authorizations = None
     authors = None
-    plansubjects = None
     publications = None
     publicationcategories = None
     publicationtypes = None
+    plansubjects = None
     subjects = None
     pass
 
