@@ -565,7 +565,12 @@
         {
             "id": "8b48ce1c-330d-4ba4-9779-065cf9fde5d9",
             "name": "Vědecké",
-            "name_en": "Scientic"
+            "name_en": "Scientic",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         }
     ],
     "publicationtypes": [
@@ -573,7 +578,13 @@
             "id": "478bf500-a90d-411a-a5aa-5546475c3992",
             "category_id": "8b48ce1c-330d-4ba4-9779-065cf9fde5d9",
             "name": "Článek J",
-            "name_en": "Article J"
+            "name_en": "Article J",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
+
         }
     ],
     "publication_authors": [
@@ -582,14 +593,24 @@
             "user_id": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 1,
-            "share": 0.5
+            "share": 0.5,
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         },
         {
-            "id": "0d80595f-5838-44d3-8de2-f0e143df429a",
+            "id": "0d80595f-5838-44d3-8de2-f0e143df429c",
             "user_id": "2d9dc868-a4a2-11ed-b9df-0242ac120003",
             "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "order": 2,
-            "share": 0.5
+            "share": 0.5,
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         }
     ],
     "publications": [
@@ -597,35 +618,56 @@
             "id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
             "name": "IT Technologie",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
-            "published_date": "2023-04-24T00:00:00",
+            "published_date": "2023-04-24T00:00:00.000000",
             "reference": "https://google.com",
             "valid": true,
-            "place": "Prague"
+            "place": "Prague",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         },
         {
             "id": "e8b1962f-5494-40cf-9bd6-b7d700dfbd8e",
             "name": "IT Technologie II",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
-            "published_date": "2023-04-24T00:00:00",
+            "published_date": "2023-04-24T00:00:00.000000",
             "reference": "https://google.com",
             "valid": true,
-            "place": "Prague"
+            "place": "Prague",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         },
         {
             "id": "b5cf7f26-5652-4fb2-b930-ecc959c005f4",
             "name": "IT Technologie III",
             "publication_type_id": "478bf500-a90d-411a-a5aa-5546475c3992",
-            "published_date": "2023-04-24T00:00:00",
+            "published_date": "2023-04-24T00:00:00.000000",
             "reference": "https://google.com",
             "valid": true,
-            "place": "Prague"
+            "place": "Prague",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         }
 
     ],
     "publication_subjects": [
         {
             "id": "d4a960e9-d7e1-4139-a693-bed27bb46a05",
-            "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46"
+            "publication_id": "cb3c3978-e716-46ac-9a3b-bb8f9d806a46",
+            "subject_id": "ce250a68-b095-11ed-9bd8-0242ac110002",
+            "created": "2023-07-04T14:31:48.744582",
+            "lastchange": "2023-07-04T14:31:48.744582",
+            "createdby": null,
+            "changedby": null,
+            "rbacobject": null
         }
     ],
 

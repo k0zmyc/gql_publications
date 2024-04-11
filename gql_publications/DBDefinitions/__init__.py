@@ -1,31 +1,17 @@
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
-
 from sqlalchemy.orm import relationship
 
 from .base import BaseModel
-from .uuid import UUID, UUIDColumn, UUIDFKey
+from .uuid import UUIDColumn, UUIDFKey
 from .AuthorModel import AuthorModel
-from .PlanSubjectModel import PlanSubjectModel
 from .PublicationCategoryModel import PublicationCategoryModel
 from .PublicationModel import PublicationModel
 from .PublicationTypeModel import PublicationTypeModel
-from . PlanSubjectModel import PlanSubjectModel
 from .SubjectModel import SubjectModel
-
-
-# id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
-
-###########################################################################################################################
-#
-# zde definujte sve SQLAlchemy modely
-# je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
-#
-###########################################################################################################################
 
 
 async def startEngine(connectionstring, makeDrop=True, makeUp=True):
@@ -41,10 +27,13 @@ async def startEngine(connectionstring, makeDrop=True, makeUp=True):
                 await conn.run_sync(BaseModel.metadata.create_all)
                 print("BaseModel.metadata.create_all finished")
             except sqlalchemy.exc.NoReferencedTableError as e:
-                print(e)
-                print("Unable automaticaly create tables")
+                print("Caught NoReferencedTableError:", e)
+                print("Unable automatically to create tables")
                 return None
-
+    
+    if not makeUp:
+        return None  # Ensure to return None when makeUp=False
+    
     async_sessionMaker = sessionmaker(
         asyncEngine, expire_on_commit=False, class_=AsyncSession
     )

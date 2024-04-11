@@ -1,42 +1,21 @@
+from functools import cache
+import logging
+
 import datetime
 import aiohttp
 import asyncio
 import os
 from aiodataloader import DataLoader
 from uoishelpers.resolvers import select, update, delete
-from uoishelpers.dataloaders import createIdLoader
-
-from functools import cache
-import logging
+from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
 from gql_publications.DBDefinitions import (
     AuthorModel,
-    PlanSubjectModel,
     PublicationModel,
-    PublicationCategoryModel,
     PublicationTypeModel,
-    SubjectModel,
-)
-
-
-from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
-from gql_publications.DBDefinitions import (
     PublicationCategoryModel,
-    PublicationTypeModel,
-    PublicationModel,
-    PlanSubjectModel,
-    AuthorModel
+    SubjectModel
 )
-
-dbmodels = {
-    "publicationcategories": PublicationCategoryModel, 
-    "publicationtypes": PublicationTypeModel, 
-    "publications": PublicationModel, 
-    "authors": AuthorModel, 
-    "plansubjects": PlanSubjectModel,
-    "subjects": SubjectModel
-    }
-
 
 
 @cache
@@ -113,20 +92,9 @@ class AuthorizationLoader(DataLoader):
         indexedResult = {key:result for key, result in zip(reducedkeys, results)}
         results = [indexedResult[key] for key in keys]
         return results
-    
 
 
-class Loaders:
-    authorizations = None
-    authors = None
-    publications = None
-    publicationcategories = None
-    publicationtypes = None
-    plansubjects = None
-    subjects = None
-    pass
-
-def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
+def createLoaders(asyncSessionMaker):
     class Loaders:
 
         @property
@@ -136,38 +104,37 @@ def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
 
         @property
         @cache
-        def requests(self):
+        def authors(self):
             return createIdLoader(asyncSessionMaker, AuthorModel)
         
         @property
         @cache
-        def histories(self):
-            return createIdLoader(asyncSessionMaker, PlanSubjectModel)
-        
-        @property
-        @cache
-        def forms(self):
-            return createIdLoader(asyncSessionMaker, PublicationCategoryModel)
-        
-        @property
-        @cache
-        def formtypes(self):
+        def publications(self):
             return createIdLoader(asyncSessionMaker, PublicationModel)
         
-        @property
+        @property  
         @cache
-        def formcategories(self):
+        def publicationtypes(self):
             return createIdLoader(asyncSessionMaker, PublicationTypeModel)
         
         @property
         @cache
-        def sections(self):
+        def publicationcategories(self):
+            return createIdLoader(asyncSessionMaker, PublicationCategoryModel)
+        
+        @property
+        @cache
+        def subjects(self):
             return createIdLoader(asyncSessionMaker, SubjectModel)
         
     return Loaders()
 
+def getLoaders(info):
+    context = info.context
+    loaders = context["loaders"]
+    return loaders
 
-def getLoadersFromInfo(info) -> Loaders:
+def getLoadersFromInfo(info):
     context = info.context
     loaders = context["loaders"]
     return loaders

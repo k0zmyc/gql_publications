@@ -1,7 +1,5 @@
 from uuid import uuid4, UUID
 from sqlalchemy import Column, Uuid
-from sqlalchemy.dialects.postgresql import UUID
-
 uuid = uuid4
 
 

@@ -4,6 +4,7 @@ from sqlalchemy import (
     Column,
     Uuid,
     DateTime,
+    Boolean,
     Integer,
     Float
 )
@@ -18,17 +19,19 @@ class AuthorModel(BaseModel):
     __tablename__ = "publication_authors"
 
     id = UUIDColumn()
-    user_id = Column(Uuid, index=True)
-    publication_id = Column(Uuid, index=True)
     order = Column(Integer)
     share = Column(Float)
+
+    publication_id = UUIDFKey(nullable=True, comment="ID of the associated publication")#Column(Uuid, index=True)
+    user_id = Column(Uuid, index=True)
 
     #user = relationship("UserModel", back_populates="author")
     #publication = relationship("PublicationModel", back_populates="author")
 
+    valid = Column(Boolean, default=True, comment="Indicates whether this entity is valid or invalid")
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    createdby = UUIDFKey(nullable=True, comment="who's created the entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
-    changedby = UUIDFKey(nullable=True, comment="who's changed the entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
-
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     rbacobject = UUIDFKey(nullable=True, comment="user or group id, determines access")
+    

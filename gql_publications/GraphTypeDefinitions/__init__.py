@@ -1,80 +1,3 @@
-from typing import List, Union
-import typing
-from unittest import result
-import strawberry as strawberryA
-import uuid
-from contextlib import asynccontextmanager
-
-
-@asynccontextmanager
-async def withInfo(info):
-    asyncSessionMaker = info.context["asyncSessionMaker"]
-    async with asyncSessionMaker() as session:
-        try:
-            yield session
-        finally:
-            pass
-
-
-def AsyncSessionFromInfo(info):
-    print(
-        "obsolete function used AsyncSessionFromInfo, use withInfo context manager instead"
-    )
-    return info.context["session"]
-
-def getLoaders(info):
-    return info.context['all']
-
-
-###########################################################################################################################
-#
-# zde definujte sve GQL modely
-# - nove, kde mate zodpovednost
-# - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
-#
-###########################################################################################################################
-#
-# priklad rozsireni UserGQLModel
-#
-
-import datetime
-
-from ._GraphResolvers import (
-    resolvePublicationById,
-    resolvePublicationAll,
-    resolveAuthorById,
-)
-from ._GraphResolvers import (
-    resolvePublicationTypeAll,
-    resolvePublicationTypeById,
-    resolvePublicationForPublicationType,
-)
-from ._GraphResolvers import (
-    resolveUpdatePublication,
-    resolveAuthorsForPublication,
-    resolvePublicationsForSubject,
-    resolveAuthorsByUser,
-)
-
-from typing import Optional
-
-from .AuthorGQLModel import AuthorGQLModel, AuthorInsertGQLModel, AuthorUpdateGQLModel, AuthorResultGQLModel
-from .Mutation import Mutation
-from .Query import Query
-from .PlanSubjectGQLModel import PlanSubjectGQLModel
-from .SubjectGQLModel import SubjectGQLModel
-from .UserGQLModel import UserGQLModel
-from ._PublicationInsertGQLModel import _PublicationInsertGQLModel
-from ._PublicationUpdateGQLModel import _PublicationUpdateGQLModel
-from .PublicationGQLModel import PublicationGQLModel
-from .PublicationGQLModel import PublicationInsertGQLModel
-from .PublicationGQLModel import PublicationUpdateGQLModel
-from .PublicationGQLModel import PublicationResultGQLModel
-from .PublicationEditorGQLModel import PublicationEditorGQLModel
-from .PublicationGQLModel import PublicationUpdateGQLModel
-from .PublicationTypeGQLModel import PublicationTypeGQLModel
-
-
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
@@ -84,4 +7,138 @@ from .PublicationTypeGQLModel import PublicationTypeGQLModel
 #
 ###########################################################################################################################
 
-schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,), mutation=Mutation)
+
+import uuid
+from typing import Union
+
+import strawberry
+
+from .UserGQLModel import UserGQLModel
+from .AuthorGQLModel import AuthorGQLModel
+from .PublicationGQLModel import PublicationGQLModel
+from .PublicationTypeGQLModel import PublicationTypeGQLModel
+from .PublicationCategoryGQLModel import PublicationCategoryGQLModel
+from .SubjectGQLModel import SubjectGQLModel
+
+from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission
+
+from .externals import UserGQLModel
+from gql_publications.utils.Dataloaders import getUserFromInfo
+
+@strawberry.type(description="""Type for query root""")
+class Query:
+    @strawberry.field(description="""Say hello to the world""")
+    async def say_hello_publications(
+        self, info: strawberry.types.Info, id: uuid.UUID
+    ) -> Union[str, None]:
+        user = getUserFromInfo(info)
+        result = f"Hello {id} `{user}`"
+        return result
+
+
+
+    from .PublicationCategoryGQLModel import (
+        publication_category_by_id,
+        publication_category_page
+    )
+    publication_category_by_id = publication_category_by_id
+    publication_category_page = publication_category_page
+
+    from .PublicationGQLModel import (
+        publication_by_id,
+        publication_page
+    )
+    publication_by_id = publication_by_id
+    publication_page = publication_page
+
+    from .PublicationTypeGQLModel import (
+        publication_type_by_id,
+        publicationType_page
+    )
+    publication_type_by_id = publication_type_by_id
+    publicationType_page = publicationType_page
+
+    from .AuthorGQLModel import (
+        author_by_id,
+        author_page
+    )
+    author_by_id = author_by_id
+    author_page = author_page
+
+    from .SubjectGQLModel import (
+        subject_by_id,
+        subject_page
+    )
+    subject_by_id = subject_by_id
+    subject_page = subject_page
+        
+
+
+    # from .UserGQLModel import (
+    #     user_by_id,
+    #     user_page
+    # )
+    # user_by_id = user_by_id
+    # user_page = user_page
+
+
+
+######################################################################################################################
+#
+#
+# Mutations
+#
+#
+######################################################################################################################
+
+@strawberry.type(description="""Type for mutation root""")
+class Mutation:
+    
+
+    from .PublicationCategoryGQLModel import (
+        publicationCategory_insert,
+        publicationCategory_update,
+        publicationCategory_delete
+    )
+    publicationCategory_insert = publicationCategory_insert
+    publicationCategory_update = publicationCategory_update
+    publicationCategory_delete = publicationCategory_delete
+
+    from .PublicationGQLModel import (
+        publication_insert,
+        publication_update,
+        #publication_delete,
+    )
+    publication_insert = publication_insert
+    publication_update = publication_update
+   # publication_delete = publication_delete
+
+    from .PublicationTypeGQLModel import (
+        publicationType_insert,
+        publicationType_update,
+        # publication_type_delete
+    )
+    publication_type_insert = publicationType_insert
+    publication_type_update = publicationType_update
+
+    from .AuthorGQLModel import (
+        author_insert,
+        author_update,
+    )
+    author_insert = author_insert
+    author_update = author_update
+
+    from .SubjectGQLModel import (
+        subject_insert,
+        subject_update,
+    )
+    subject_insert = subject_insert
+    subject_update = subject_update
+
+    
+    
+schema = strawberry.federation.Schema(Query, types=(UserGQLModel, PublicationGQLModel, PublicationCategoryGQLModel, 
+                                                    PublicationTypeGQLModel, 
+                                                    SubjectGQLModel, AuthorGQLModel),
+                                      mutation=Mutation)
+# schema = strawberryA.federation.Schema(Query, types=(PublicationGQLModel,), mutation=Mutation)
