@@ -12,20 +12,21 @@ from ._GraphResolvers import (
     resolve_id,
     resolve_name,
     resolve_name_en,
+
     resolve_valid,
+
     resolve_created,
     resolve_lastchange,
     resolve_createdby,
     resolve_changedby,
-    resolve_rbacobject,
+    #resolve_rbacobject,
+
     createRootResolver_by_id
 )
 
-from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
+#from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
-AuthorGQLModel = Annotated["AuthorGQLModel", strawberryA.lazy(".AuthorGQLModel")]
-UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
-PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
+#PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
 PublicationCategoryGQLModel = Annotated["PublicationCategoryGQLModel", strawberryA.lazy(".PublicationCategoryGQLModel")]
 
 
@@ -43,29 +44,19 @@ class PublicationTypeGQLModel(BaseGQLModel):
     id = resolve_id
     name = resolve_name
     name_en = resolve_name_en
+
     valid = resolve_valid
+
     created = resolve_created
     lastchange = resolve_lastchange
     createdby = resolve_createdby
     changedby = resolve_changedby
-    rbacobject = resolve_rbacobject
+    #rbacobject = resolve_rbacobject
 
-
-    @strawberryA.field(description="""Returns a list of publicationTypes with the same type id""", permission_classes=[OnlyForAuthentized()])
-    async def publicationType(
-        self, info: strawberryA.types.Info
-    ) -> List["PublicationTypeGQLModel"]:
-        loader = getLoadersFromInfo(info).publicationtypes
-        result = await loader.filter_by(publicaion_type_id=self.publication_type_id)
-        return result
-    
-
-    @strawberryA.field(description="""Returns a list of authors, where the author participated in publication by type""", permission_classes=[OnlyForAuthentized()])
-    async def authorsByPublicationType(
-        self, info: strawberryA.types.Info
-    ) -> typing.List["PublicationGQLModel"]:
-        loader = getLoadersFromInfo(info).authors
-        result = await loader.filter_by(publication_id=self.publication_type_id)
+    @strawberryA.field(description="""Publication category ID""")
+    async def publicationCategory(self, info: strawberryA.types.Info) -> Optional ["PublicationCategoryGQLModel"]:
+        from .PublicationCategoryGQLModel import PublicationCategoryGQLModel  # Import here to avoid circular dependency
+        result = await PublicationCategoryGQLModel.resolve_reference(info, self.category_id)
         return result
         
 
@@ -82,22 +73,20 @@ from .utils import createInputs
 @createInputs
 @dataclass
 class PublicationTypeWhereFilter:
-    name: str
     type_id: uuid.UUID
-    value: str
-    createdby: uuid.UUID
+    category_id: uuid.UUID
+    name: str
+    name_en: str
     valid: bool
-    place: str
-    published_date: datetime.datetime
-    reference: str
+    createdby: uuid.UUID
 
 
-@strawberryA.field(description="""Returns a list of publicationTypes""", permission_classes=[OnlyForAuthentized()])
+@strawberryA.field(description="""Returns a list of publicationTypes""")
 async def publicationType_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10,
     where: Optional[PublicationTypeWhereFilter] = None
 ) -> List[PublicationTypeGQLModel]:
-    loader = getLoadersFromInfo(info).publicationtypes
+    loader = getLoadersFromInfo(info).publicationTypes
     wf = None if where is None else strawberry.asdict(where)
     result = await loader.page(skip, limit, where = wf)
     return result
@@ -115,8 +104,9 @@ from typing import Optional
 
 @strawberryA.input(description="Definition of a publication used for creation")
 class PublicationTypeInsertGQLModel:
-    publication_type_id: uuid.UUID = strawberryA.field(description="The ID of the publicationType type")
+    category_id: uuid.UUID = strawberryA.field(description="The ID of the publication category")
     name: str = strawberryA.field(description="Name/label of the publicationType")
+    name_en: str = strawberryA.field(description="Name/label of the publicationType(in engish)")
     
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the publicationTypes data is valid or not (optional)", default=True)
     id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the publicationType", default=None)
@@ -131,7 +121,8 @@ class PublicationTypeUpdateGQLModel:
 
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the publicationTypes data is valid or not", default=None)
     name: Optional[str] = strawberryA.field(description="Updated name/label of the publicationType", default=None)
-    publication_type_id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the publicationType type",default=None)
+    name_en: Optional[str] = strawberryA.field(description="Updated name/label of the publicationType(in english)", default=None)
+    category_id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the publicationcategory",default=None)
     changedby: strawberry.Private[uuid.UUID] = None
 
 @strawberryA.type(description="Result of a mutation for a publicationType")
@@ -151,8 +142,7 @@ class PublicationTypeResultGQLModel:
 #                                                                                                                         #
 ###########################################################################################################################
 
-@strawberryA.mutation(description="Adds a new publicationType.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Adds a new publicationType.")
 async def publicationType_insert(self, info: strawberryA.types.Info, publication: PublicationTypeInsertGQLModel) -> PublicationTypeResultGQLModel:
     user = getUserFromInfo(info)
     publication.createdby = uuid.UUID(user["id"])
@@ -163,8 +153,7 @@ async def publicationType_insert(self, info: strawberryA.types.Info, publication
     result.id = row.id
     return result
 
-@strawberryA.mutation(description="Update the publicationType.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Update the publicationType.")
 async def publicationType_update(self, info: strawberryA.types.Info, publication: PublicationTypeUpdateGQLModel) -> PublicationTypeResultGQLModel:
     user = getUserFromInfo(info)
     publication.changedby = uuid.UUID(user["id"])

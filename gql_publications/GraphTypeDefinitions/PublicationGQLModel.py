@@ -12,7 +12,7 @@ from ._GraphResolvers import (
     resolve_id,
     resolve_name,    
     resolve_date,
-    resolve_publication_reference,
+    resolve_p_reference,
     resolve_valid,
     resolve_place,
 
@@ -20,14 +20,13 @@ from ._GraphResolvers import (
     resolve_lastchange,
     resolve_createdby,
     resolve_changedby,
-    resolve_rbacobject,
+    #resolve_rbacobject,
 
     createRootResolver_by_id
 )
 
-from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
+#from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
-AuthorGQLModel = Annotated["AuthorGQLModel", strawberryA.lazy(".AuthorGQLModel")]
 PublicationTypeGQLModel = Annotated["PublicationTypeGQLModel", strawberryA.lazy(".PublicationTypeGQLModel")]
 
 
@@ -45,7 +44,7 @@ class PublicationGQLModel(BaseGQLModel):
     id = resolve_id
     name = resolve_name
     published_date = resolve_date
-    reference = resolve_publication_reference
+    reference = resolve_p_reference
     valid = resolve_valid
     place = resolve_place
 
@@ -54,7 +53,7 @@ class PublicationGQLModel(BaseGQLModel):
     lastchange = resolve_lastchange
     createdby = resolve_createdby
     changedby = resolve_changedby
-    rbacobject = resolve_rbacobject
+    #rbacobject = resolve_rbacobject
     
 
     @strawberryA.field(description="""Publication type""")
@@ -77,12 +76,17 @@ from .utils import createInputs
 @createInputs
 @dataclass
 class PublicationWhereFilter:
+    id: uuid.UUID
     name: str
+    type_id: uuid.UUID
+    place: str
+    published_date: datetime.datetime
+    reference: str
     valid: bool
     createdby: uuid.UUID
 
 
-@strawberryA.field(description="""Returns a list of publications""", permission_classes=[OnlyForAuthentized()])
+@strawberryA.field(description="""Returns a list of publications""")
 async def publication_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10,
     where: Optional[PublicationWhereFilter] = None
@@ -140,8 +144,7 @@ class PublicationResultGQLModel:
 #                                                                                                                         #
 ###########################################################################################################################
 
-@strawberryA.mutation(description="Adds a new publication.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Adds a new publication.")
 async def publication_insert(self, info: strawberryA.types.Info, publication: PublicationInsertGQLModel) -> PublicationResultGQLModel:
     user = getUserFromInfo(info)
     publication.createdby = uuid.UUID(user["id"])
@@ -152,8 +155,7 @@ async def publication_insert(self, info: strawberryA.types.Info, publication: Pu
     result.id = row.id
     return result
 
-@strawberryA.mutation(description="Update the publication.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Update the publication.")
 async def publication_update(self, info: strawberryA.types.Info, publication: PublicationUpdateGQLModel) -> PublicationResultGQLModel:
     user = getUserFromInfo(info)
     publication.changedby = uuid.UUID(user["id"])
@@ -163,6 +165,15 @@ async def publication_update(self, info: strawberryA.types.Info, publication: Pu
     result.msg = "ok"
     result.id = publication.id
     result.msg = "ok" if (row is not None) else "fail"
+    return result
+
+@strawberry.mutation(
+    description="Delete the publication.")
+async def publication_delete(self, info: strawberryA.types.Info, id: uuid.UUID) -> PublicationResultGQLModel:
+    loader = getLoadersFromInfo(info).publications
+    row = await loader.delete(id=id)
+    result = PublicationResultGQLModel(id=id, msg="ok")
+    result.msg = "fail" if row is None else "ok"
     return result
 
 

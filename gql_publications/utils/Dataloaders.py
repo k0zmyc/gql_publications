@@ -114,17 +114,17 @@ def createLoaders(asyncSessionMaker):
         
         @property  
         @cache
-        def publicationtypes(self):
+        def publicationTypes(self):
             return createIdLoader(asyncSessionMaker, PublicationTypeModel)
         
         @property
         @cache
-        def publicationcategories(self):
+        def publicationCategories(self):
             return createIdLoader(asyncSessionMaker, PublicationCategoryModel)
         
         @property
         @cache
-        def subjects(self):
+        def publicationsubjects(self):
             return createIdLoader(asyncSessionMaker, SubjectModel)
         
     return Loaders()

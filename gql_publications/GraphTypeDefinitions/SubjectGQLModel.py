@@ -10,19 +10,21 @@ from .BaseGQLModel import BaseGQLModel
 
 from ._GraphResolvers import (
     resolve_id,
+
     resolve_valid,
+
     resolve_created,
     resolve_lastchange,
     resolve_createdby,
     resolve_changedby,
-    resolve_rbacobject,
+    #resolve_rbacobject,
+
     createRootResolver_by_id
 )
 
-from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
+#from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission, OnlyForAuthentized
 
 PublicationGQLModel = Annotated["PublicationGQLModel", strawberryA.lazy(".PublicationGQLModel")]
-PublicationTypeGQLModel = Annotated ["PublicationTypeGQLModel", strawberryA.lazy(".PublicationTypeGQLModel")]
 
 @strawberryA.federation.type(
     keys=["id"], 
@@ -31,20 +33,22 @@ PublicationTypeGQLModel = Annotated ["PublicationTypeGQLModel", strawberryA.lazy
 class SubjectGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
-        return getLoadersFromInfo(info).subjects
+        return getLoadersFromInfo(info).publicationsubjects
 
     id = resolve_id
+
     valid = resolve_valid
+
     created = resolve_created
     lastchange = resolve_lastchange
     createdby = resolve_createdby
     changedby = resolve_changedby
-    rbacobject = resolve_rbacobject
+    #rbacobject = resolve_rbacobject
 
-    @strawberryA.field(description="""Publication subject""", permission_classes=[OnlyForAuthentized()])
-    async def subject(self, info: strawberryA.types.Info) -> Optional ["SubjectGQLModel"]:
-        loader = getLoadersFromInfo(info).subjects
-        result = await loader.load(self.subject_id)
+    @strawberryA.field(description="""Publication ID""")
+    async def publication_id(self, info: strawberryA.types.Info) -> Optional ["PublicationGQLModel"]:
+        from .PublicationGQLModel import PublicationGQLModel  # Import here to avoid circular dependency
+        result = await PublicationGQLModel.resolve_reference(info, self.publication_id)
         return result
     
     
@@ -61,18 +65,19 @@ from .utils import createInputs
 @createInputs
 @dataclass
 class SubjectWhereFilter:
-    type_id: uuid.UUID
-    createdby: uuid.UUID
+    id: uuid.UUID
+    #subject_id: uuid.UUID
+    publication_id: uuid.UUID
     valid: bool
+    createdby: uuid.UUID
 
 
-@strawberryA.field(description="""Returns a list of publication subjects""",
-                   permission_classes=[OnlyForAuthentized()])
+@strawberryA.field(description="""Returns a list of publication subjects""")
 async def subject_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10,
     where: Optional[SubjectWhereFilter] = None
 ) -> List[SubjectGQLModel]:
-    loader = getLoadersFromInfo(info).subjects
+    loader = getLoadersFromInfo(info).publicationsubjects
     wf = None if where is None else strawberry.asdict(where)
     result = await loader.page(skip, limit, where = wf)
     return result
@@ -90,11 +95,11 @@ from typing import Optional
 
 @strawberryA.input(description="Definition of a subject used for creation")
 class SubjectInsertGQLModel:
+    publication_id: uuid.UUID = strawberryA.field(description="The ID of the publication")
     subject_id: uuid.UUID = strawberryA.field(description="The ID of the subject")
-    name: str = strawberryA.field(description="Name/label of the subject")
     
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the subjects data is valid or not (optional)", default=True)
-    id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the subject", default=None)
+    id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the publication subject", default=None)
     content_id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the content associated with the subject ", default=None)
     createdby: strawberry.Private[uuid.UUID] = None
     rbacobject: strawberry.Private[uuid.UUID] = None
@@ -105,7 +110,6 @@ class SubjectUpdateGQLModel:
     lastchange: datetime.datetime = strawberry.field(description="Timestamp of last change")
 
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the subjects data is valid or not", default=None)
-    name: Optional[str] = strawberryA.field(description="Updated name/label of the subject", default=None)
     subject_id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the subject type",default=None)
     changedby: strawberry.Private[uuid.UUID] = None
 
@@ -126,27 +130,36 @@ class SubjectResultGQLModel:
 #                                                                                                                         #
 ###########################################################################################################################
 
-@strawberryA.mutation(description="Adds a new subject.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Adds a new subject.")
 async def subject_insert(self, info: strawberryA.types.Info, subject: SubjectInsertGQLModel) -> SubjectResultGQLModel:
     user = getUserFromInfo(info)
     subject.createdby = uuid.UUID(user["id"])
-    loader = getLoadersFromInfo(info).subjects
+    loader = getLoadersFromInfo(info).publicationsubjects
     row = await loader.insert(subject)
     result = SubjectResultGQLModel()
     result.msg = "ok"
     result.id = row.id
     return result
 
-@strawberryA.mutation(description="Update the subject.",
-                      permission_classes=[OnlyForAuthentized()])
+@strawberryA.mutation(description="Update the subject.")
 async def subject_update(self, info: strawberryA.types.Info, subject: SubjectUpdateGQLModel) -> SubjectResultGQLModel:
     user = getUserFromInfo(info)
     subject.changedby = uuid.UUID(user["id"])
-    loader = getLoadersFromInfo(info).subjects
+    loader = getLoadersFromInfo(info).publicationsubjects
     row = await loader.update(subject)
     result = SubjectResultGQLModel()
     result.msg = "ok"
     result.id = subject.id
     result.msg = "ok" if (row is not None) else "fail"
+    return result
+
+
+@strawberry.mutation(
+    description="Delete the publication.")
+async def subject_delete(self, info: strawberryA.types.Info, id:uuid.UUID, 
+    lastchange: datetime.datetime = strawberry.field()) -> SubjectResultGQLModel:
+    loader = getLoadersFromInfo(info).publicationsubjects
+    row = await loader.delete(id=id)
+    result = SubjectResultGQLModel(id=id, msg="ok")
+    result.msg = "fail" if row is None else "ok"
     return result

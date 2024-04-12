@@ -13,14 +13,14 @@ from typing import Union
 
 import strawberry
 
-from .UserGQLModel import UserGQLModel
+#from .UserGQLModel import UserGQLModel
 from .AuthorGQLModel import AuthorGQLModel
 from .PublicationGQLModel import PublicationGQLModel
 from .PublicationTypeGQLModel import PublicationTypeGQLModel
 from .PublicationCategoryGQLModel import PublicationCategoryGQLModel
 from .SubjectGQLModel import SubjectGQLModel
 
-from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission
+#from gql_publications.GraphTypeDefinitions._GraphPermissions import RoleBasedPermission
 
 from .externals import UserGQLModel
 from gql_publications.utils.Dataloaders import getUserFromInfo
@@ -98,11 +98,11 @@ class Mutation:
     from .PublicationCategoryGQLModel import (
         publicationCategory_insert,
         publicationCategory_update,
-        publicationCategory_delete
+        #publicationCategory_delete
     )
     publicationCategory_insert = publicationCategory_insert
     publicationCategory_update = publicationCategory_update
-    publicationCategory_delete = publicationCategory_delete
+    #publicationCategory_delete = publicationCategory_delete
 
     from .PublicationGQLModel import (
         publication_insert,
@@ -111,34 +111,38 @@ class Mutation:
     )
     publication_insert = publication_insert
     publication_update = publication_update
-   # publication_delete = publication_delete
+    #publication_delete = publication_delete
 
     from .PublicationTypeGQLModel import (
         publicationType_insert,
         publicationType_update,
-        # publication_type_delete
     )
-    publication_type_insert = publicationType_insert
-    publication_type_update = publicationType_update
+    publicationType_insert = publicationType_insert
+    publicationType_update = publicationType_update
 
     from .AuthorGQLModel import (
         author_insert,
         author_update,
+        author_delete
     )
     author_insert = author_insert
     author_update = author_update
+    author_delete = author_delete
 
     from .SubjectGQLModel import (
         subject_insert,
         subject_update,
+        subject_delete
     )
     subject_insert = subject_insert
     subject_update = subject_update
-
+    subject_delete = subject_delete
     
     
-schema = strawberry.federation.Schema(Query, types=(UserGQLModel, PublicationGQLModel, PublicationCategoryGQLModel, 
+schema = strawberry.federation.Schema(Query, types=(PublicationGQLModel, PublicationCategoryGQLModel, 
                                                     PublicationTypeGQLModel, 
                                                     SubjectGQLModel, AuthorGQLModel),
                                       mutation=Mutation)
+
+
 # schema = strawberryA.federation.Schema(Query, types=(PublicationGQLModel,), mutation=Mutation)
