@@ -83,7 +83,9 @@ class PublicationWhereFilter:
     published_date: datetime.datetime
     reference: str
     valid: bool
+    
     createdby: uuid.UUID
+    changedby: uuid.UUID
 
 
 @strawberryA.field(description="""Returns a list of publications""")
@@ -112,8 +114,8 @@ class PublicationInsertGQLModel:
     id: Optional[uuid.UUID] = strawberryA.field(description="The ID of the publication", default=None)
     name: Optional[str] = strawberryA.field(description="Name/label of the publication")
     published_date: Optional[datetime.datetime] = strawberryA.field(description="Date of the publication creation", default=datetime.datetime.now())
-    reference: Optional[str] = strawberryA.field(description="""Reference for the publication""", default=None)
-    place: Optional[str] = strawberryA.field(description="""Place of publication origin""", default=None)
+    reference: str = strawberryA.field(description="""Reference for the publication""", default=None)
+    place: str = strawberryA.field(description="""Place of publication origin""", default=None)
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the publications data is valid or not (optional)", default=True)
     publication_type_id: uuid.UUID = strawberryA.field(description="The ID of the publication type")
     

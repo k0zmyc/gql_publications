@@ -69,7 +69,9 @@ class SubjectWhereFilter:
     #subject_id: uuid.UUID
     publication_id: uuid.UUID
     valid: bool
+    
     createdby: uuid.UUID
+    changedby: uuid.UUID
 
 
 @strawberryA.field(description="""Returns a list of publication subjects""")

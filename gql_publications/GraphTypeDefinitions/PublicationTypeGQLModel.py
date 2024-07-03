@@ -78,7 +78,9 @@ class PublicationTypeWhereFilter:
     name: str
     name_en: str
     valid: bool
+    
     createdby: uuid.UUID
+    changedby: uuid.UUID
 
 
 @strawberryA.field(description="""Returns a list of publicationTypes""")

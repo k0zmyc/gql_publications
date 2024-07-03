@@ -42,7 +42,7 @@ class AuthorGQLModel(BaseGQLModel):
     id = resolve_id
     order = resolve_order
     share = resolve_share
-    user_id = resolve_user_id
+    #user_id = resolve_user_id
     valid = resolve_valid
 
     changedby = resolve_changedby
@@ -70,13 +70,15 @@ from .utils import createInputs
 @dataclass
 class AuthorWhereFilter:
     id: uuid.UUID
-    user_id: uuid.UUID
+    #user_id: uuid.UUID
     publication_id:uuid.UUID
     order: int
     share: float
     valid: bool
-    createdby: uuid.UUID
 
+    createdby: uuid.UUID
+    changedby: uuid.UUID
+    
 @strawberryA.field(description="""Returns a list of Authors""")
 async def author_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10,
@@ -99,9 +101,9 @@ author_by_id = createRootResolver_by_id(AuthorGQLModel, description="Returns Aut
 class AuthorInsertGQLModel:
     publication_id: uuid.UUID = strawberryA.field(description="The ID of the associated publication")
     user_id: uuid.UUID = strawberryA.field(description="The ID of the associated user")
+    order: int = strawberryA.field(description="The order of the Author in the publication")
+    share: float = strawberryA.field(description="The share of the Author in the publication")
 
-    order: Optional[int] = strawberryA.field(description="The order of the Author in the publication")
-    share: Optional[float] = strawberryA.field(description="The share of the Author in the publication",default=None)
     valid: Optional[bool] = strawberryA.field(description="Indicates whether the data is valid or not (optional)", default=True)
     createdby: strawberry.Private[uuid.UUID] = None
     #rbacobject: strawberry.Private[uuid.UUID] = None
